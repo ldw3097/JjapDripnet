@@ -10,10 +10,8 @@ import java.util.List;
 @Getter @Setter
 public class Board {
 
-    @Id @GeneratedValue
-    @Column(name="board_id")
-    private Long id;
-
+    @Id
+    @Column(name="board_name")
     private String name;
 
     @OneToMany(mappedBy = "board")

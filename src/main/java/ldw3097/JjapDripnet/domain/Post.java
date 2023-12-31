@@ -26,7 +26,6 @@ public class Post {
     @Lob
     private String body;
 
-    // 글이 삭제되면 댓글도 삭제됨
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comment;
 

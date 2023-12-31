@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th = "http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrinkto-fit=no">
+    <title>Board</title>
+    <style>
+        .pagination-custom{
+            width: 40px;
+        }
+    </style>
+
+</head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="container">
+    <div class="container-md">
+        <div class="row">
+            <div class="col">
+                <h2 th:text="#{${boardName}}"></h2>
+            </div>
+
+        </div>
+        <div>
+            <table class="table table-striped text-center">
+                <thead>
+                <tr>
+                    <th>제목</th>
+                    <th style="width: 150px">글쓴이</th>
+                    <th style="width: 150px">날짜</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="post : ${posts}">
+                    <td class="text-start"><a th:href="@{/post/${post.id}}" th:text="${post.title}" ></a></td>
+                    <td><span th:text="${post.user.name}" ></span></td>
+                    <td><span th:text="${#temporals.format(post.createTime, 'yyyy/MM/dd hh:MM')}"></span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <nav aria-label="Page navigation" class="d-flex justify-content-center">
+                <ul class="pagination text-center" th:each="nextPage : ${nextPageNums}">
+                    <li class="page-item pagination-custom"><a class="page-link"
+                                             th:href="@{/board/{param1}/{param2}(param1=${boardName}, param2=${nextPage})}"
+                                             th:text="${nextPage}" th:classappend="(${nextPage} == ${pageNum}) ? 'active': _ "></a></li>
+
+                </ul>
+            </nav>
+        </div>
+        <div class="text-end">
+            <button class="btn btn-primary ">글쓰기</button>
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="/js/bootstrap.bundle.js"></script>
+</body>
+</html>

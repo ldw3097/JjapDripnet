@@ -3,7 +3,6 @@ package ldw3097.JjapDripnet.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.java.Log;
 
 import java.time.LocalDateTime;
 
