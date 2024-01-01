@@ -1,8 +1,33 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<nav class="navbar navbar-dark bg-primary mb-5" th:fragment="navbar">
+<nav class="navbar navbar-expand-lg bg-body-tertiary mb-5" th:fragment="navbar">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">JJapDripnet</a>
+        <a class="navbar-brand" th:href="@{/}">JJapDripnet</a>
+        <div class="navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/board/open_board/1}">자유게시판</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav mb-2 mb-lg-0">
+                <th:block th:if="${userId} == null">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/user/add}">회원가입</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/user/login}">로그인</a>
+                    </li>
+                </th:block>
+                <th:block th:if="${userId} != null">
+                    <li class="nav-item">
+                        <span class="nav-link" th:text="|회원ID: ${userId}|">회원가입</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/user/logout}">로그아웃</a>
+                    </li>
+                </th:block>
+            </ul>
+        </div>
     </div>
 
 </nav>

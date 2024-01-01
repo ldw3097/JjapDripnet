@@ -10,11 +10,9 @@ import lombok.Setter;
 @Table(name = "users")
 public class User {
 
-    @Id @GeneratedValue
+    @Id
     @Column(name="user_id")
-    private Long id;
-
-    private String name;
+    private String id;
 
     private String password;
 

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th = "http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${boardName})}">
+</head>
+<body>
+<style>
+    .pagination-custom{
+        width: 40px;
+    }
+</style>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container">
+    <div class="container-md">
+        <div class="row">
+            <div class="col mb-5">
+                <h2 th:text="#{${targetPost.board.getName()}}"></h2>
+            </div>
+        </div>
+        <div class="row">
+            <h3 th:text="${targetPost.title}"></h3>
+        </div>
+        <div class="row bg-secondary-subtle my-3">
+            <span th:text="|글쓴이: ${targetPost.user.name}   글쓴시각: ${#temporals.format(targetPost.createTime, 'yyyy/MM/dd hh:MM')}|"></span>
+        </div>
+        <hr class="my-3">
+        <div class="row">
+            <span th:text="${targetPost.body}"></span>
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="/js/bootstrap.bundle.js"></script>
+</body>
+</html>

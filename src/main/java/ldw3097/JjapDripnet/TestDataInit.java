@@ -25,7 +25,7 @@ public class TestDataInit {
         openBoard.setName("open_board");
         boardRepository.save(openBoard);
         User user1 = new User();
-        user1.setName("tester1");
+        user1.setId("tester1");
         user1.setPassword("pass1");
         userRepository.save(user1);
         int postCount = 150;

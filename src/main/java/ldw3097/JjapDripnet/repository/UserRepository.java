@@ -19,7 +19,7 @@ public class UserRepository {
 
     }
 
-    public User findOne(Long id){
+    public User findOne(String id){
         return em.find(User.class, id);
     }
 

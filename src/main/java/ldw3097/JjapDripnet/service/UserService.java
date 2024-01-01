@@ -12,8 +12,18 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Long join(User user){
+    public String join(User user){
         userRepository.save(user);
         return user.getId();
+    }
+
+    public User login(String id, String password){
+        User user = userRepository.findOne(id);
+        if(user ==null) return null;
+        if(user.getPassword().equals(password)){
+            return user;
+        }else{
+            return null;
+        }
     }
 }

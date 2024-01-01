@@ -1,19 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th = "http://www.thymeleaf.org">
-<head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrinkto-fit=no">
-    <title>Board</title>
-    <style>
-        .pagination-custom{
-            width: 40px;
-        }
-    </style>
-
+<head th:replace="~{fragments/head :: head(${boardName})}">
 </head>
 <body>
-<div th:replace="fragments/navbar :: navbar"></div>
+<style>
+    .pagination-custom{
+        width: 40px;
+    }
+</style>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 <div class="container">
     <div class="container-md">
         <div class="row">
@@ -33,8 +28,8 @@
                 </thead>
                 <tbody>
                 <tr th:each="post : ${posts}">
-                    <td class="text-start"><a th:href="@{/post/${post.id}}" th:text="${post.title}" ></a></td>
-                    <td><span th:text="${post.user.name}" ></span></td>
+                    <td class="text-start"><a th:href="@{/post/{param1}(param1=${post.getId()})}" th:text="${post.title}" ></a></td>
+                    <td><span th:text="${post.user.id}" ></span></td>
                     <td><span th:text="${#temporals.format(post.createTime, 'yyyy/MM/dd hh:MM')}"></span></td>
                 </tr>
                 </tbody>
