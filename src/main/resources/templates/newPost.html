@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th = "http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('새글 등록')}">
+</head>
+<body>
+<style>
+    .pagination-custom{
+        width: 40px;
+    }
+</style>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container">
+    <div class="container-md">
+        <div class="row">
+            <div class="col mb-5">
+                <h2 th:text="#{${boardId}}"></h2>
+            </div>
+        </div>
+        <form th:action method="post" th:object="${postingForm}">
+            <div class="form-group my-2">
+                <label th:for="title">제목</label>
+                <input type="text" th:field="*{title}" class="form-control" placeholder="제목을 입력하세요" th:errorclass="border-danger">
+                <div class="border-danger" th:errors="*{title}"></div>
+            </div>
+            <div class="form-group my-2">
+                <label th:for="body">내용</label>
+                <textarea class="form-control" th:field="*{body}" rows="8" placeholder="내용을 입력하세요" th:errorclass="border-danger"></textarea>
+                <div class="border-danger" th:errors="*{body}"></div>
+            </div>
+            <button type="submit" class="btn btn-primary my-4">등록</button>
+
+        </form>
+
+
+    </div>
+
+</div>
+
+
+<script src="/js/bootstrap.bundle.js"></script>
+</body>
+</html>

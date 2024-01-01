@@ -46,7 +46,7 @@
             </nav>
         </div>
         <div class="text-end">
-            <button class="btn btn-primary ">글쓰기</button>
+            <button class="btn btn-primary" th:onclick="|location.href='@{/post/addnew/{param1}(param1=${boardName})}'|">글쓰기</button>
         </div>
 
     </div>
