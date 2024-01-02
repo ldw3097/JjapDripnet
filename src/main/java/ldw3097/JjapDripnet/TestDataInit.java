@@ -22,11 +22,11 @@ public class TestDataInit {
     @PostConstruct
     public void init(){
         Board openBoard = new Board();
-        openBoard.setName("open_board");
+        openBoard.setId("open_board");
         boardRepository.save(openBoard);
         User user1 = new User();
-        user1.setId("tester1");
-        user1.setPassword("pass1");
+        user1.setId("tester");
+        user1.setPassword("pass");
         userRepository.save(user1);
         int postCount = 150;
         Post[] posts = new Post[postCount];
@@ -34,13 +34,28 @@ public class TestDataInit {
             posts[i] = new Post();
             posts[i].setBoard(openBoard);
             posts[i].setUser(user1);
-            posts[i].setTitle("sampletitle" + i);
-            posts[i].setBody("samplebody" + i);
+            posts[i].setTitle("sample title " + i);
+            posts[i].setBody("sample content " + i);
             posts[i].setCreateTime(LocalDateTime.now());
             postRepository.save(posts[i]);
-
         }
+        Post indicatingPost = new Post();
+        indicatingPost.setBoard(openBoard);
+        indicatingPost.setUser(user1);
+        indicatingPost.setTitle("테스팅 계정 ID: tester   PW: pass");
+        indicatingPost.setBody("테스팅 계정 ID: tester   PW: pass");
+        indicatingPost.setCreateTime(LocalDateTime.now());
+        postRepository.save(indicatingPost);
 
+        Board readings = new Board();
+        readings.setId("readings");
+        boardRepository.save(readings);
+        Board qna = new Board();
+        qna.setId("qna");
+        boardRepository.save(qna);
+        Board game = new Board();
+        game.setId("game");
+        boardRepository.save(game);
 
     }
 }

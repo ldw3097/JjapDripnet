@@ -11,8 +11,7 @@ import java.util.List;
 public class Board {
 
     @Id
-    @Column(name="board_name")
-    private String name;
+    private String id;
 
     @OneToMany(mappedBy = "board")
     private List<Post> posts;

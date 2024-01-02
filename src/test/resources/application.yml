@@ -1,9 +1,9 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ldwboard?serverTimezone=Asia/Seoul
-    username: ldwboard_manager
+    url: jdbc:h2:tcp://localhost/~/Codes/jjapdripnet_db/jjapdripnet
+    username: ldw3097
     password: asdf1234
+    driver-class-name: org.h2.Driver
 
 
   jpa:

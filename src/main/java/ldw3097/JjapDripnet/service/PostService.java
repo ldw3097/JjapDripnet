@@ -20,8 +20,8 @@ public class PostService {
         return postRepository.findPage(boardName, pageNum);
     }
 
-    public int getTotalPageNum(){
-        int pageCount =  postRepository.countPage().intValue();
+    public int getTotalPageNum(String boardId){
+        int pageCount =  postRepository.countPage(boardId).intValue();
         return (pageCount -1) / PostRepository.pageLimit + 1;
     }
 

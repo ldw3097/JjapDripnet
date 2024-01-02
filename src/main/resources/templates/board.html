@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th = "http://www.thymeleaf.org">
-<head th:replace="~{fragments/head :: head(${boardName})}">
+<head th:replace="~{fragments/head :: head(#{${boardId}})}">
 </head>
 <body>
 <style>
@@ -13,7 +13,7 @@
     <div class="container-md">
         <div class="row">
             <div class="col">
-                <h2 th:text="#{${boardName}}"></h2>
+                <h2 th:text="#{${boardId}}"></h2>
             </div>
 
         </div>
@@ -39,14 +39,14 @@
             <nav aria-label="Page navigation" class="d-flex justify-content-center">
                 <ul class="pagination text-center" th:each="nextPage : ${nextPageNums}">
                     <li class="page-item pagination-custom"><a class="page-link"
-                                             th:href="@{/board/{param1}/{param2}(param1=${boardName}, param2=${nextPage})}"
+                                             th:href="@{/board/{param1}/{param2}(param1=${boardId}, param2=${nextPage})}"
                                              th:text="${nextPage}" th:classappend="(${nextPage} == ${pageNum}) ? 'active': _ "></a></li>
 
                 </ul>
             </nav>
         </div>
         <div class="text-end">
-            <button class="btn btn-primary" th:onclick="|location.href='@{/post/addnew/{param1}(param1=${boardName})}'|">글쓰기</button>
+            <button class="btn btn-primary" th:onclick="|location.href='@{/post/addnew/{param1}(param1=${boardId})}'|">글쓰기</button>
         </div>
 
     </div>

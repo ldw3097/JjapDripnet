@@ -2,11 +2,20 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <nav class="navbar navbar-expand-lg bg-body-tertiary mb-5" th:fragment="navbar">
     <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{/}">JJapDripnet</a>
+        <a class="navbar-brand" th:href="@{/}">LDW board</a>
         <div class="navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/board/open_board/1}">자유게시판</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/board/readings/1}">읽을거리</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/board/qna/1}">QnA</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/board/game/1}">게임</a>
                 </li>
             </ul>
             <ul class="navbar-nav mb-2 mb-lg-0">
@@ -20,7 +29,7 @@
                 </th:block>
                 <th:block th:if="${userId} != null">
                     <li class="nav-item">
-                        <span class="nav-link" th:text="|회원ID: ${userId}|">회원가입</span>
+                        <span class="nav-link" th:text="|회원: ${userId}|">회원가입</span>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/user/logout}">로그아웃</a>

@@ -15,7 +15,7 @@ import java.util.List;
 public class PostRepository  {
 
     private final EntityManager em;
-    public static final int pageLimit = 7;
+    public static final int pageLimit = 10;
 
     @Transactional
     public void save(Post post){
@@ -27,7 +27,7 @@ public class PostRepository  {
     }
 
     public List<Post> findPage(String boardName, int page){
-        int pageLimit = 7;
+        int pageLimit = 10;
         return em.createQuery("select p from Post p where p.board.id = :boardName ORDER BY p.id DESC ", Post.class)
                 .setParameter("boardName", boardName)
                 .setFirstResult((page-1)*pageLimit)
@@ -35,8 +35,9 @@ public class PostRepository  {
                 .getResultList();
     }
 
-    public Long countPage(){
-        return em.createQuery("select count(*) from Post p", Long.class)
+    public Long countPage(String boardId){
+        return em.createQuery("select count(*) from Post p where p.board.id = :boardId", Long.class)
+                .setParameter("boardId", boardId)
                 .getSingleResult();
 
     }

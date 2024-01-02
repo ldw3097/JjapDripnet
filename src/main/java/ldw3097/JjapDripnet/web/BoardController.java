@@ -18,12 +18,12 @@ import java.util.List;
 public class BoardController {
     private final PostService postService;
 
-    @GetMapping("/{boardName}/{pageNum}")
-    public String board(@PathVariable String boardName, @PathVariable int pageNum, Model model){
-        List<Post> posts = postService.postPage(boardName, pageNum);
+    @GetMapping("/{boardId}/{pageNum}")
+    public String board(@PathVariable String boardId, @PathVariable int pageNum, Model model){
+        List<Post> posts = postService.postPage(boardId, pageNum);
         model.addAttribute("posts", posts);
 
-        int totalPage = postService.getTotalPageNum();
+        int totalPage = postService.getTotalPageNum(boardId);
         int startPageNum = pageNum - 4;
         if(startPageNum < 1) startPageNum = 1;
         int endPageNum = startPageNum + 8;
