@@ -2,11 +2,14 @@ package ldw3097.JjapDripnet.web;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import ldw3097.JjapDripnet.domain.Comment;
 import ldw3097.JjapDripnet.domain.Post;
 import ldw3097.JjapDripnet.domain.User;
 import ldw3097.JjapDripnet.repository.BoardRepository;
+import ldw3097.JjapDripnet.repository.CommentRepository;
 import ldw3097.JjapDripnet.repository.PostRepository;
 import ldw3097.JjapDripnet.service.PostService;
+import ldw3097.JjapDripnet.web.form.CommentForm;
 import ldw3097.JjapDripnet.web.form.PostingForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,11 +29,16 @@ public class PostController {
     private final PostService postService;
     private final PostRepository postRepository;
     private final BoardRepository boardRepository;
+    private final CommentRepository commentRepository;
 
     @GetMapping("/{postId}")
     public String getPost(@PathVariable Long postId, Model model){
         Post targetPost = postRepository.findOne(postId);
         model.addAttribute("targetPost", targetPost);
+
+        CommentForm commentForm = new CommentForm();
+        model.addAttribute("commentForm", commentForm);
+
         return "post";
     }
 
@@ -46,9 +54,7 @@ public class PostController {
     public String addPost(@Valid @ModelAttribute PostingForm postingForm,
                           BindingResult bindingResult, @PathVariable String boardId,
                           @SessionAttribute(name=SessionConst.LOGIN_USER)User user){
-        log.info("posting form: {}", postingForm);
         if(bindingResult.hasErrors()){
-            log.info("binding result has error");
             return "newPost";
         }
         Post post = new Post();
@@ -60,6 +66,34 @@ public class PostController {
         postRepository.save(post);
         return "redirect:/board/%s/1".formatted(boardId);
     }
+
+    @PostMapping("/{postId}/addComment")
+    public String addComment(@Valid @ModelAttribute CommentForm commentForm,
+                             BindingResult bindingResult, @PathVariable Long postId,
+                             @SessionAttribute(name=SessionConst.LOGIN_USER, required = false) User user, Model model){
+        if(bindingResult.hasErrors()){
+            Post targetPost = postRepository.findOne(postId);
+            model.addAttribute("targetPost", targetPost);
+            return "post";
+        }
+        if(user == null){
+            log.info("user is null");
+            bindingResult.rejectValue("commentBody", "notLoggedIn", "로그인 해주세요.");
+            Post targetPost = postRepository.findOne(postId);
+            model.addAttribute("targetPost", targetPost);
+            return "post";
+        }
+
+        Comment comment = new Comment();
+        comment.setBody(commentForm.getCommentBody());
+        comment.setPost(postRepository.findOne(postId));
+        comment.setCreateTime(LocalDateTime.now());
+        comment.setUser(user);
+        commentRepository.save(comment);
+        return "redirect:/post/%d".formatted(postId);
+    }
+
+
 
 
 }

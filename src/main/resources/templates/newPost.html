@@ -11,11 +11,7 @@
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 <div class="container">
     <div class="container-md">
-        <div class="row">
-            <div class="col mb-5">
-                <h2 th:text="#{${boardId}}"></h2>
-            </div>
-        </div>
+        <div th:replace="~{fragments/boardTitle :: boardTitle(${boardId})}"></div>
         <form th:action method="post" th:object="${postingForm}">
             <div class="form-group my-2">
                 <label th:for="title">제목</label>
