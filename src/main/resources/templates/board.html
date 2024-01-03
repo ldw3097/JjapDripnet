@@ -25,7 +25,7 @@
                 <tr th:each="post : ${posts}">
                     <td class="text-start"><a th:href="@{/post/{param1}(param1=${post.getId()})}" th:text="${post.title}" ></a></td>
                     <td><span th:text="${post.user.id}" ></span></td>
-                    <td><span th:text="${#temporals.format(post.createTime, 'yyyy/MM/dd hh:MM')}"></span></td>
+                    <td><span th:text="${#temporals.format(post.createTime, 'yyyy/MM/dd hh:mm')}"></span></td>
                 </tr>
                 </tbody>
             </table>

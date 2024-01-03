@@ -38,7 +38,7 @@ public class PostController {
 
         CommentForm commentForm = new CommentForm();
         model.addAttribute("commentForm", commentForm);
-
+        log.info("create time: {}", targetPost.getCreateTime());
         return "post";
     }
 

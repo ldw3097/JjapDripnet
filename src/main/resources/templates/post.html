@@ -16,7 +16,7 @@
             <h3 th:text="${targetPost.title}"></h3>
         </div>
         <div class="row my-3">
-            <span th:text="|글쓴이: ${targetPost.user.id} &nbsp&nbsp&nbsp 글쓴시각: ${#temporals.format(targetPost.createTime, 'yyyy/MM/dd hh:MM')}|"></span>
+            <span th:text="|글쓴이: ${targetPost.user.id} &nbsp&nbsp&nbsp 글쓴시각: ${#temporals.format(targetPost.createTime, 'yyyy/MM/dd hh:mm')}|"></span>
         </div>
         <hr class="my-3">
         <div class="row" style="min-height : 400px">
@@ -30,7 +30,7 @@
                         <p class="mb-0" th:text="|작성자: ${comment.user.getId()}|"></p>
                     </div>
                     <div class="col text-end">
-                        <p class="mb-0" th:text="${#temporals.format(comment.getCreateTime(), 'yyyy/MM/dd hh:MM')}"></p>
+                        <p class="mb-0" th:text="${#temporals.format(comment.getCreateTime(), 'yyyy/MM/dd hh:mm')}"></p>
                     </div>
                 </div>
                 <div class="column">
