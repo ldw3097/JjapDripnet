@@ -41,4 +41,10 @@ public class PostRepository  {
                 .getSingleResult();
 
     }
+    @Transactional
+    public void delete(Post post){
+        em.remove(post);
+    }
+
+
 }

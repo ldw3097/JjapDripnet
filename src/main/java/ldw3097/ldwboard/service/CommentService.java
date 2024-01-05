@@ -24,4 +24,16 @@ public class CommentService {
         comment.setWriter(user);
         commentRepository.save(comment);
     }
+
+    public Comment findOne(Long commentId){
+        return commentRepository.findOne(commentId);
+    }
+
+    public void deleteComment(Comment comment){
+        commentRepository.delete(comment);
+    }
+
+    public void updateComment(Comment comment, String newBody){
+        comment.setBody(newBody);
+    }
 }

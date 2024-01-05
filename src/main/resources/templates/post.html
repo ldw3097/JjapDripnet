@@ -7,6 +7,10 @@
     .pagination-custom{
         width: 40px;
     }
+    a{
+        text-decoration: none;
+        color: dimgray;
+    }
 </style>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 <div class="container">
@@ -18,13 +22,18 @@
         <div class="row my-3">
             <span th:text="|글쓴이: ${targetPost.getWriter.id} &nbsp&nbsp&nbsp 글쓴시각: ${#temporals.format(targetPost.createTime, 'yyyy/MM/dd hh:mm')}|"></span>
         </div>
+        <div class="text-end" th:if="${isWriter}">
+            <a th:href="@{/post/{param1}/edit(param1=${targetPost.getId()}) }">수정</a>
+            &nbsp;&nbsp;
+            <a th:href="@{/post/{param1}/delete(param1=${targetPost.getId()}) }">삭제</a>
+        </div>
         <hr class="my-3">
         <div class="row" style="min-height : 400px">
             <span th:text="${targetPost.body}"></span>
         </div>
         <hr class="my-3">
         <div class="row">
-            <div class="container m-2" th:each="comment : ${targetPost.getComment()}">
+            <div class="container m-2" th:each="comment, iterStat : ${targetPost.getComment()}" th:id="'comment-' + ${iterStat.index}">
                 <div class="row bg-secondary-subtle rounded my-1 p-1">
                     <div class="col-auto">
                         <p class="mb-0" th:text="|작성자: ${comment.getWriter.getId()}|"></p>
@@ -35,6 +44,11 @@
                 </div>
                 <div class="column">
                     <p th:text="${comment.body}"></p>
+                </div>
+                <div class="text-end" th:if="${session.loginUser} and ${comment.getWriter().id} == ${session.loginUser.id}" >
+<!--                    <a th:href="@{/post/editComment(param1=${comment.getId()})}">수정</a>-->
+<!--                    &nbsp;&nbsp;-->
+                    <a th:href="@{/post/deleteComment(commentId=${comment.getId()})}">삭제</a>
                 </div>
             </div>
         </div>
@@ -52,8 +66,6 @@
     </div>
 
 </div>
-
-
 <script src="/js/bootstrap.bundle.js"></script>
 </body>
 </html>

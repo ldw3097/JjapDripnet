@@ -22,4 +22,11 @@ public class BoardRepository {
 
     }
 
+    @Transactional
+    public void delete(Board board){
+        em.remove(board);
+    }
+
+
+
 }

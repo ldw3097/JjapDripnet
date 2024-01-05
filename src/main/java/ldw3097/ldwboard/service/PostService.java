@@ -9,6 +9,7 @@ import ldw3097.ldwboard.web.form.PostingForm;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,7 +28,7 @@ public class PostService {
         return (pageCount -1) / PostRepository.pageLimit + 1;
     }
 
-    public Long savePost(PostingForm postingForm, Board board, User user) {
+    public void savePost(PostingForm postingForm, Board board, User user) {
         Post post = new Post();
         post.setTitle(postingForm.getTitle());
         post.setWriter(user);
@@ -35,8 +36,16 @@ public class PostService {
         post.setBody(postingForm.getBody());
         post.setBoard(board);
         postRepository.save(post);
-        return post.getId();
     }
 
+    public void deletePost(Post post){
+        postRepository.delete(post);
+    }
+
+    @Transactional
+    public void update(Post post, String newTitle, String newBody){
+        post.setTitle(newTitle);
+        post.setBody(newBody);
+    }
 
 }

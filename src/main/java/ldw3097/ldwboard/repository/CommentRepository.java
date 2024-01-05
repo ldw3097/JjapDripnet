@@ -25,5 +25,14 @@ public class CommentRepository {
         return comments;
     }
 
+    public Comment findOne(Long commentId){
+        return em.find(Comment.class, commentId);
+    }
+
+    @Transactional
+    public void delete(Comment comment){
+        em.remove(comment);
+    }
+
 
 }
