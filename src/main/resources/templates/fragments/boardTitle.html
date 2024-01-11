@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div class="row mb-3" th:fragment="boardTitle(boardId)">
     <div class="col">
-        <h3 class="board-title" th:text="#{${boardId}}"></h3>
+        <h3><a class="board-title text-decoration-none" th:text="#{${boardId}}" th:href="@{ /board/{boardId}/1(boardId=${boardId}) }" ></a> </h3>
     </div>
 </div>
 </html>

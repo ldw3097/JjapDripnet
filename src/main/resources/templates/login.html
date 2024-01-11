@@ -14,7 +14,7 @@
         <div th:if="${#fields.hasGlobalErrors()}">
             <p class="border-danger" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
         </div>
-        <div>
+        <div class="my-2">
             <label for="loginName">ID</label>
             <input type="text" id="loginName" th:field="*{id}" class="form-control" th:errorclass="border-danger">
             <div class="border-danger" th:errors="*{id}"></div>

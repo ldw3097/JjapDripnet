@@ -19,7 +19,7 @@
                 </li>
             </ul>
             <ul class="navbar-nav mb-2 mb-lg-0">
-                <th:block th:if="${userId} == null">
+                <th:block th:if="${session.loginUser} == null">
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/user/add}">회원가입</a>
                     </li>
@@ -27,9 +27,9 @@
                         <a class="nav-link" th:href="@{/user/login}">로그인</a>
                     </li>
                 </th:block>
-                <th:block th:if="${userId} != null">
+                <th:block th:if="${session.loginUser} != null">
                     <li class="nav-item">
-                        <span class="nav-link" th:text="|사용자: ${userId}|">회원가입</span>
+                        <span class="nav-link" th:text="|사용자: ${session.loginUser.getId()}|">사용자</span>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/user/logout}">로그아웃</a>

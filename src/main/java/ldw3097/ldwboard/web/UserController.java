@@ -33,7 +33,12 @@ public class UserController {
         if(bindingResult.hasErrors()){
             return "addMember";
         }
-        userService.addUser(userSaveForm.getId(), userSaveForm.getPassword());
+        try{
+            userService.addUser(userSaveForm.getId(), userSaveForm.getPassword());
+        }catch(RuntimeException e){
+            bindingResult.rejectValue("id","existingId", "이미 존재하는 ID 입니다.");
+            return "addMember";
+        }
         return "redirect:/";
     }
 
@@ -43,17 +48,15 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(@Valid @ModelAttribute LoginForm loginForm, BindingResult bindingResult, HttpServletRequest request){
+    public String login(@Valid @ModelAttribute LoginForm loginForm, BindingResult bindingResult, HttpSession httpSession){
         if(bindingResult.hasErrors()){
             return "login";
         }
-        User loginUser = userService.login(loginForm.getId(), loginForm.getPassword());
-        if(loginUser == null){
+
+        if(! userService.login(loginForm.getId(), loginForm.getPassword(), httpSession)){
             bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다.");
             return "login";
         }
-        HttpSession session = request.getSession();
-        session.setAttribute(SessionConst.LOGIN_USER, loginUser);
         return "redirect:/";
     }
 

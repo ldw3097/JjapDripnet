@@ -20,7 +20,7 @@
             <h3 th:text="${targetPost.title}"></h3>
         </div>
         <div class="row my-3">
-            <span th:text="|글쓴이: ${targetPost.getWriter.id} &nbsp&nbsp&nbsp 글쓴시각: ${#temporals.format(targetPost.createTime, 'yyyy/MM/dd hh:mm')}|"></span>
+            <span th:text="|글쓴이: ${targetPost.getWriter.id} &nbsp&nbsp&nbsp 글쓴시각: ${#temporals.format(targetPost.createTime, 'yyyy/MM/dd HH:mm')}|"></span>
         </div>
         <div class="text-end" th:if="${isWriter}">
             <a th:href="@{/post/{param1}/edit(param1=${targetPost.getId()}) }">수정</a>
@@ -39,7 +39,7 @@
                         <p class="mb-0" th:text="|작성자: ${comment.getWriter.getId()}|"></p>
                     </div>
                     <div class="col text-end">
-                        <p class="mb-0" th:text="${#temporals.format(comment.getCreateTime(), 'yyyy/MM/dd hh:mm')}"></p>
+                        <p class="mb-0" th:text="${#temporals.format(comment.getCreateTime(), 'yyyy/MM/dd HH:mm')}"></p>
                     </div>
                 </div>
                 <div class="column">

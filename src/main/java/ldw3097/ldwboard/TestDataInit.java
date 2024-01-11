@@ -30,8 +30,8 @@ public class TestDataInit {
         openBoard.setId("open_board");
         boardRepository.save(openBoard);
 
-        userService.addUser("testUser", "1234");
-        User user1 = userRepository.findOne("testUser");
+        userService.addUser("test", "1234");
+        User user1 = userRepository.findOne("test");
 
         int postCount = 150;
         Post[] posts = new Post[postCount];
@@ -39,15 +39,15 @@ public class TestDataInit {
             posts[i] = new Post();
             posts[i].setBoard(openBoard);
             posts[i].setWriter(user1);
-            posts[i].setTitle("sample title " + i);
-            posts[i].setBody("sample content " + i);
+            posts[i].setTitle("sample title no." + i);
+            posts[i].setBody("sample content no." + i);
             posts[i].setCreateTime(LocalDateTime.now());
             postRepository.save(posts[i]);
         }
         Post indicatingPost = new Post();
         indicatingPost.setBoard(openBoard);
         indicatingPost.setWriter(user1);
-        indicatingPost.setTitle("테스팅 계정 ID: testUser   PW: 1234");
+        indicatingPost.setTitle("테스팅 계정 ID: test  PW: 1234");
         indicatingPost.setBody("테스팅 계정은 테스트 할때 사용하셔도 됩니다.");
         indicatingPost.setCreateTime(LocalDateTime.now());
         postRepository.save(indicatingPost);

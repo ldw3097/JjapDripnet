@@ -18,8 +18,8 @@ import java.util.List;
 public class BoardController {
     private final PostService postService;
 
-    @GetMapping("/{boardId}/{pageNum}")
-    public String board(@PathVariable String boardId, @PathVariable int pageNum, Model model){
+    @GetMapping({"/{boardId}/{pageNum}"})
+    public String board(@PathVariable String boardId, @PathVariable Integer pageNum, Model model){
         List<Post> posts = postService.postPage(boardId, pageNum);
         model.addAttribute("posts", posts);
         List<Integer> nextPageNum = getPageNum(boardId, pageNum);

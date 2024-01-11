@@ -11,13 +11,13 @@
     </div>
     <h4 class="mb-3">회원 정보 입력</h4>
     <form th:action th:object="${userSaveForm}" method="post">
-        <div>
+        <div class="my-2">
             <label for="loginName">ID</label>
             <input type="text" id="loginName" th:field="*{id}" class="form-control" th:errorclass="border-danger">
             <div class="border-danger" th:errors="*{id}"></div>
         </div>
         <div>
-            <label for="password">비밀번호(4~16자리)</label>
+            <label for="password">비밀번호 (4~16자리)</label>
             <input type="password" id="password" th:field="*{password}" class="form-control" th:errorclass="border-danger">
             <div class="border-danger" th:errors="*{password}"></div>
         </div>

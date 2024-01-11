@@ -21,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Enumeration;
 
@@ -34,7 +35,6 @@ public class PostController {
     private final PostRepository postRepository;
     private final BoardRepository boardRepository;
     private final CommentService commentService;
-    private final EntityManager em;
 
     @GetMapping("/{postId}")
     public String getPost(@PathVariable Long postId, Model model,
@@ -58,12 +58,14 @@ public class PostController {
     @PostMapping("/addnew/{boardId}")
     public String addPost(@Valid @ModelAttribute PostingForm postingForm,
                           BindingResult bindingResult, @PathVariable String boardId,
-                          @SessionAttribute(name=SessionConst.LOGIN_USER)User user){
+                          @SessionAttribute(name=SessionConst.LOGIN_USER)User user,
+                          RedirectAttributes redirectAttributes){
         if(bindingResult.hasErrors()){
             return "newPost";
         }
         postService.savePost(postingForm, boardRepository.findBoard(boardId), user);
-        return "redirect:/board/%s/1".formatted(boardId);
+        redirectAttributes.addAttribute("boardId", boardId);
+        return "redirect:/board/{boardId}/1";
     }
 
 
@@ -80,17 +82,20 @@ public class PostController {
             return "post";
         }
         commentService.saveComment(commentForm, postRepository.findOne(postId), user);
-        return "redirect:/post/%d".formatted(postId);
+        return "redirect:/post/{postId}";
     }
 
     @GetMapping("/{postId}/delete")
     public String deletePost(@PathVariable Long postId,
-                             @SessionAttribute(name=SessionConst.LOGIN_USER) User user){
+                             @SessionAttribute(name=SessionConst.LOGIN_USER) User user,
+                             RedirectAttributes redirectAttributes){
         Post post = postRepository.findOne(postId);
         if(post.getWriter().getId().equals(user.getId()) ){
             postService.deletePost(post);
         }
-        return "redirect:/board/%s/1".formatted(post.getBoard().getId());
+
+        redirectAttributes.addAttribute("boardId", post.getBoard().getId());
+        return "redirect:/board/{boardId}/1";
     }
 
     @GetMapping("/{postId}/edit")
@@ -106,20 +111,23 @@ public class PostController {
 
     @PostMapping("/{postId}/edit")
     public String doEditPost(@PathVariable Long postId, @Valid @ModelAttribute PostingForm postingForm, BindingResult bindingResult,
-                             @SessionAttribute(name=SessionConst.LOGIN_USER) User user){
+                             @SessionAttribute(name=SessionConst.LOGIN_USER) User user,
+                             RedirectAttributes redirectAttributes){
         if(bindingResult.hasErrors()){
             return "editPost";}
         Post post = postRepository.findOne(postId);
         if(post.getWriter().getId().equals(user.getId())){
             postService.update(post, postingForm.getTitle(), postingForm.getBody());
         }
-        return "redirect:/post/%d".formatted(postId);
+        redirectAttributes.addAttribute("postId", postId);
+        return "redirect:/post/{postId}";
     }
 
     @GetMapping("/editComment")
     public String editComment(@RequestParam Long commentId,
                               @Validated @ModelAttribute CommentForm commentForm, BindingResult bindingResult,
-                              @SessionAttribute(name=SessionConst.LOGIN_USER) User user){
+                              @SessionAttribute(name=SessionConst.LOGIN_USER) User user,
+                              RedirectAttributes redirectAttributes){
         if(bindingResult.hasErrors()){
             return "redirect:/";
         }
@@ -127,16 +135,19 @@ public class PostController {
         if (comment.getWriter().getId().equals(user.getId()) ){
             comment.setBody(commentForm.getCommentBody());
         }
-        return "redirect:/post/%d".formatted(comment.getPost().getId());
+        redirectAttributes.addAttribute("postId", comment.getPost().getId());
+        return "redirect:/post/{postId}";
     }
 
     @GetMapping("/deleteComment")
-    public String deleteComment(@RequestParam Long commentId, @SessionAttribute(name=SessionConst.LOGIN_USER) User user){
+    public String deleteComment(@RequestParam Long commentId, @SessionAttribute(name=SessionConst.LOGIN_USER) User user,
+                                RedirectAttributes redirectAttributes){
         Comment comment = commentService.findOne(commentId);
         if(comment.getWriter().getId().equals(user.getId())){
             commentService.deleteComment(comment);
         }
-        return "redirect:/post/%d".formatted(comment.getPost().getId());
+        redirectAttributes.addAttribute("postId", comment.getPost().getId());
+        return "redirect:/post/{postId}";
     }
 
 
