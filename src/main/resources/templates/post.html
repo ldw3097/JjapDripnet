@@ -11,6 +11,9 @@
         text-decoration: none;
         color: dimgray;
     }
+    .toastui-editor-contents p {
+        font-size: 16px;
+    }
 </style>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 <div class="container">
@@ -29,7 +32,7 @@
         </div>
         <hr class="my-3">
         <div class="row" style="min-height : 400px">
-            <span th:text="${targetPost.body}"></span>
+            <div id="viewer"></div>
         </div>
         <hr class="my-3">
         <div class="row">
@@ -67,5 +70,17 @@
 
 </div>
 <script src="/js/bootstrap.bundle.js"></script>
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-viewer.js"></script>
+<script th:inline="javascript">
+    const content = [[${targetPost.body}]]
+    const Viewer = toastui.Editor;
+
+
+    const viewer = new Viewer({
+        el: document.querySelector('#viewer'),
+        height: "800px",
+        initialValue: content,
+    });
+</script>
 </body>
 </html>
