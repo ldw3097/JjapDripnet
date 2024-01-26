@@ -1,28 +1,7 @@
 package ldw3097.ldwboard.repository;
 
-import jakarta.persistence.EntityManager;
 import ldw3097.ldwboard.domain.User;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
-@RequiredArgsConstructor
-public class UserRepository {
-
-    private final EntityManager em;
-
-    @Transactional
-    public void save(User user){
-
-        em.persist(user);
-
-    }
-
-    public User findOne(String id){
-        return em.find(User.class, id);
-    }
-
-
-
+public interface UserRepository extends JpaRepository<User, String> {
 }

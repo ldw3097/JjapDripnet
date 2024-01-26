@@ -9,41 +9,41 @@
     }
 </style>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
-<div class="container">
-    <div class="container-md">
-        <div th:replace="~{fragments/boardTitle :: boardTitle(${boardId})}"></div>
-        <div>
-            <table class="table table-striped text-center">
-                <thead>
-                <tr>
-                    <th>제목</th>
-                    <th style="width: 150px">글쓴이</th>
-                    <th style="width: 150px">날짜</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="post : ${posts}">
-                    <td class="text-start"><a th:href="@{/post/{param1}(param1=${post.getId()})}" th:text="${post.title}" ></a></td>
-                    <td><span th:text="${post.getWriter.id}" ></span></td>
-                    <td><span th:text="${#temporals.format(post.createTime, 'yyyy/MM/dd HH:mm')}"></span></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="row">
-            <nav aria-label="Page navigation" class="d-flex justify-content-center">
-                <ul class="pagination text-center" th:each="nextPage : ${nextPageNums}">
-                    <li class="page-item pagination-custom"><a class="page-link"
-                                             th:href="@{/board/{param1}/{param2}(param1=${boardId}, param2=${nextPage})}"
-                                             th:text="${nextPage}" th:classappend="(${nextPage} == ${pageNum}) ? 'active': _ "></a></li>
-
-                </ul>
-            </nav>
-        </div>
-        <div class="text-end">
-            <button class="btn btn-primary" th:onclick="|location.href='@{/post/addnew/{param1}(param1=${boardId})}'|">글쓰기</button>
-        </div>
-
+<div class="container-md">
+    <div th:replace="~{fragments/boardTitle :: boardTitle(${boardId})}"></div>
+    <div>
+        <table class="table table-striped text-center">
+            <thead>
+            <tr>
+                <th>제목</th>
+                <th style="width: 150px">글쓴이</th>
+                <th style="width: 150px">날짜</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="post : ${posts}">
+                <td class="text-start"><a th:href="@{/post/{param1}(param1=${post.getId()})}" th:text="${post.title}" ></a></td>
+                <td><span th:text="${post.getWriter.id}" ></span></td>
+                <td><span th:text="${#temporals.format(post.createTime, 'yyyy/MM/dd HH:mm')}"></span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="row">
+        <nav>
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:each="pageNumber : ${pageNumbers}">
+                    <a class="page-link"
+                       th:href="@{ /board/{param1}(param1=${boardId}, pageNum=${pageNumber}) }"
+                       th:text="${pageNumber}"
+                       th:classappend="${pageNumber == posts.number + 1} ? active ">
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div class="text-end">
+        <button class="btn btn-primary" th:onclick="|location.href='@{/post/addnew/{param1}(param1=${boardId})}'|">글쓰기</button>
     </div>
 
 </div>

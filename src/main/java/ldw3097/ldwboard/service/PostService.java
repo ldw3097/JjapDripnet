@@ -19,25 +19,18 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
 
-    public List<Post> postPage(String boardName, int pageNum){
-        return postRepository.findPage(boardName, pageNum);
-    }
-
-    public int getTotalPageNum(String boardId){
-        int pageCount =  postRepository.countPage(boardId).intValue();
-        return (pageCount -1) / PostRepository.pageLimit + 1;
-    }
-
-    public void savePost(PostingForm postingForm, Board board, User user) {
+    @Transactional
+    public void savePost(String title, String body, Board board, User user) {
         Post post = new Post();
-        post.setTitle(postingForm.getTitle());
+        post.setTitle(title);
         post.setWriter(user);
         post.setCreateTime(LocalDateTime.now());
-        post.setBody(postingForm.getBody());
+        post.setBody(body);
         post.setBoard(board);
         postRepository.save(post);
     }
 
+    @Transactional
     public void deletePost(Post post){
         postRepository.delete(post);
     }

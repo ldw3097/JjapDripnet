@@ -7,8 +7,10 @@ import ldw3097.ldwboard.repository.CommentRepository;
 import ldw3097.ldwboard.web.form.CommentForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,23 +18,26 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
 
-    public void saveComment(CommentForm commentForm, Post post, User user) {
+    @Transactional
+    public void saveComment(String commentBody, Post post, User user) {
         Comment comment = new Comment();
-        comment.setBody(commentForm.getCommentBody());
+        comment.setBody(commentBody);
         comment.setPost(post);
         comment.setCreateTime(LocalDateTime.now());
         comment.setWriter(user);
         commentRepository.save(comment);
     }
 
-    public Comment findOne(Long commentId){
-        return commentRepository.findOne(commentId);
+    public Optional<Comment> findOne(Long commentId){
+        return commentRepository.findById(commentId);
     }
 
+    @Transactional
     public void deleteComment(Comment comment){
         commentRepository.delete(comment);
     }
 
+    @Transactional
     public void updateComment(Comment comment, String newBody){
         comment.setBody(newBody);
     }

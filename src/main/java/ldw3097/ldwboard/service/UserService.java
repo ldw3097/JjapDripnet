@@ -8,6 +8,9 @@ import ldw3097.ldwboard.web.SessionConst;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -15,8 +18,9 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public void addUser(String id, String password){
-        if(userRepository.findOne(id) != null){
+        if(userRepository.existsById(id)){
             throw new RuntimeException("이미 존재하는 아이디 입니다.");
         }
         String encodedPassword = passwordEncoder.encode(password);
@@ -26,11 +30,11 @@ public class UserService {
         userRepository.save(user);
     }
 
+
     public Boolean login(String id, String password, HttpSession session){
-        User user = userRepository.findOne(id);
-        if(user == null) return false;
-        if(passwordEncoder.matches(password, user.getPassword())){
-            session.setAttribute(SessionConst.LOGIN_USER, user);
+        Optional<User> user = userRepository.findById(id);
+        if(user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())){
+            session.setAttribute(SessionConst.LOGIN_USER, user.get());
             return true;
         }else{
             return false;

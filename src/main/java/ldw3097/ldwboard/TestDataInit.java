@@ -31,7 +31,7 @@ public class TestDataInit {
         boardRepository.save(openBoard);
 
         userService.addUser("test", "1234");
-        User user1 = userRepository.findOne("test");
+        User user1 = userRepository.findById("test").orElseThrow();
 
         int postCount = 150;
         Post[] posts = new Post[postCount];
