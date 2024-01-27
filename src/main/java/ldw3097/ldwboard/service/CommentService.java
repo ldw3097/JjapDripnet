@@ -25,6 +25,7 @@ public class CommentService {
         comment.setPost(post);
         comment.setCreateTime(LocalDateTime.now());
         comment.setWriter(user);
+        post.incCommentCnt();
         commentRepository.save(comment);
     }
 
@@ -35,6 +36,8 @@ public class CommentService {
     @Transactional
     public void deleteComment(Comment comment){
         commentRepository.delete(comment);
+        Post targetPost = comment.getPost();
+        targetPost.decCommentCnt();
     }
 
     @Transactional

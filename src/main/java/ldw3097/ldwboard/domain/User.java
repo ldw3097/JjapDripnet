@@ -18,14 +18,4 @@ public class User {
 
     private String password;
 
-    @ManyToMany(mappedBy = "likedBy")
-    private Collection<Post> posts;
-
-    public Collection<Post> getPosts() {
-        return posts;
-    }
-
-    public void setPosts(Collection<Post> posts) {
-        this.posts = posts;
-    }
 }

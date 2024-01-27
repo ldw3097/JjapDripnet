@@ -1,6 +1,8 @@
 package ldw3097.ldwboard;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import ldw3097.ldwboard.domain.Board;
 import ldw3097.ldwboard.domain.Comment;
 import ldw3097.ldwboard.domain.Post;
@@ -9,65 +11,66 @@ import ldw3097.ldwboard.repository.BoardRepository;
 import ldw3097.ldwboard.repository.CommentRepository;
 import ldw3097.ldwboard.repository.PostRepository;
 import ldw3097.ldwboard.repository.UserRepository;
+import ldw3097.ldwboard.service.BoardService;
+import ldw3097.ldwboard.service.CommentService;
+import ldw3097.ldwboard.service.PostService;
 import ldw3097.ldwboard.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class TestDataInit {
-    private final BoardRepository boardRepository;
+public class TestDataInit implements ApplicationRunner {
+
+    private final BoardService boardService;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final CommentRepository commentRepository;
+    private final CommentService commentService;
     private final UserService userService;
+    private final PostService postService;
 
-    @PostConstruct
-    public void init(){
+    @PersistenceContext
+    EntityManager em;
+
+    @Override
+    @Transactional
+    public void run(ApplicationArguments args) throws Exception {
         Board openBoard = new Board();
         openBoard.setId("open_board");
-        boardRepository.save(openBoard);
+        boardService.saveBoard(openBoard);
+        em.flush();
 
         userService.addUser("test", "1234");
         User user1 = userRepository.findById("test").orElseThrow();
 
-        int postCount = 150;
-        Post[] posts = new Post[postCount];
-        for(int i=0; i<postCount; i++){
-            posts[i] = new Post();
-            posts[i].setBoard(openBoard);
-            posts[i].setWriter(user1);
-            posts[i].setTitle("sample title no." + i);
-            posts[i].setBody("sample content no." + i);
-            posts[i].setCreateTime(LocalDateTime.now());
-            postRepository.save(posts[i]);
+        for (int i = 0; i < 150; i++) {
+            postService.savePost("sample title no." + i, "sample content no." + i, openBoard, user1);
         }
-        Post indicatingPost = new Post();
-        indicatingPost.setBoard(openBoard);
-        indicatingPost.setWriter(user1);
-        indicatingPost.setTitle("테스팅 계정 ID: test  PW: 1234");
-        indicatingPost.setBody("테스팅 계정은 테스트 할때 사용하셔도 됩니다.");
-        indicatingPost.setCreateTime(LocalDateTime.now());
-        postRepository.save(indicatingPost);
 
-        Comment comment= new Comment();
-        comment.setWriter(user1);
-        comment.setPost(indicatingPost);
-        comment.setCreateTime(LocalDateTime.now());
-        comment.setBody("댓글 테스트");
-        commentRepository.save(comment);
+        Long indicatingPostId = postService.savePost("테스팅 계정 ID: test  PW: 1234", "테스팅 계정은 테스트 할때 사용하셔도 됩니다.", openBoard, user1);
+        Post indicatingPost  = postRepository.findById(indicatingPostId).orElseThrow();
+        commentService.saveComment("댓글 테스트", indicatingPost, user1);
 
         Board readings = new Board();
         readings.setId("readings");
-        boardRepository.save(readings);
+        boardService.saveBoard(readings);
         Board qna = new Board();
         qna.setId("qna");
-        boardRepository.save(qna);
+        boardService.saveBoard(qna);
         Board game = new Board();
         game.setId("game");
-        boardRepository.save(game);
-
+        boardService.saveBoard(game);
     }
+
+
 }
+
+

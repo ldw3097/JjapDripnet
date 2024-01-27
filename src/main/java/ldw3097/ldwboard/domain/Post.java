@@ -30,6 +30,8 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comment;
 
+    private int commentCnt;
+
     private LocalDateTime createTime;
 
 
@@ -38,6 +40,29 @@ public class Post {
     private int dislikes;
 
 
-    private Long views;
+    public void like(){
+        ++likes;
+    }
+
+    public void unlike(){
+        --likes;
+    }
+
+    public void dislike(){
+        ++dislikes;
+    }
+
+    public void undislike(){
+        --dislikes;
+    }
+
+    public void incCommentCnt(){
+        ++commentCnt;
+    }
+
+    public void decCommentCnt(){
+        --commentCnt;
+    }
+
 
 }

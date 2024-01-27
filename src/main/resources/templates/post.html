@@ -12,61 +12,70 @@
     }
 </style>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
-<div class="container">
-    <div class="container-md">
-        <div th:replace="~{fragments/boardTitle :: boardTitle(${targetPost.board.getId()})}"></div>
-        <div class="row">
-            <h3 th:text="${targetPost.title}"></h3>
+<div class="container-md">
+    <div th:replace="~{fragments/boardTitle :: boardTitle(${targetPost.board.getId()})}"></div>
+    <div class="row">
+        <h3 th:text="${targetPost.title}"></h3>
+    </div>
+    <div class="row my-3">
+        <span th:text="|글쓴이: ${targetPost.getWriter.id} &nbsp&nbsp&nbsp 글쓴시각: ${#temporals.format(targetPost.createTime, 'yyyy/MM/dd HH:mm')}|"></span>
+    </div>
+    <div class="text-end" th:if="${isWriter}">
+        <a class="link-underline-opacity-0 link-dark" th:href="@{/post/{param1}/edit(param1=${targetPost.getId()}) }">수정</a>
+        &nbsp;&nbsp;
+        <a class="link-underline-opacity-0 link-dark" th:href="@{/post/{param1}/delete(param1=${targetPost.getId()}) }">삭제</a>
+    </div>
+    <hr class="my-3">
+    <div class="row" style="min-height : 400px">
+        <div id="viewer"></div>
+    </div>
+    <div class="row">
+        <div class="col d-xl-flex justify-content-xl-center">
+            <a class="btn btn-outline-success" type="button" style="margin-right: 33px;"
+               th:text="|추천 ${targetPost.getLikes()}|" th:href="@{/post/{param1}/likePost(param1=${targetPost.getId()}, isLike=${true})}"
+                th:classappend="${isLiked} ? 'active' ">추천</a>
+            <a class="btn btn-outline-secondary" type="button"
+               th:text="|비추 ${targetPost.getDislikes()}|" th:href="@{/post/{param1}/likePost(param1=${targetPost.getId()}, isLike=${false})}"
+               th:classappend="${isDisliked} ? 'active' ">비추</a>
         </div>
-        <div class="row my-3">
-            <span th:text="|글쓴이: ${targetPost.getWriter.id} &nbsp&nbsp&nbsp 글쓴시각: ${#temporals.format(targetPost.createTime, 'yyyy/MM/dd HH:mm')}|"></span>
-        </div>
-        <div class="text-end" th:if="${isWriter}">
-            <a class="link-underline-opacity-0 link-dark" th:href="@{/post/{param1}/edit(param1=${targetPost.getId()}) }">수정</a>
-            &nbsp;&nbsp;
-            <a class="link-underline-opacity-0 link-dark" th:href="@{/post/{param1}/delete(param1=${targetPost.getId()}) }">삭제</a>
-        </div>
-        <hr class="my-3">
-        <div class="row" style="min-height : 400px">
-            <div id="viewer"></div>
-        </div>
-        <hr class="my-3">
-        <div class="row">
-            <div class="container m-2" th:each="comment, iterStat : ${targetPost.getComment()}" th:id="'comment-' + ${iterStat.index}">
-                <div class="row bg-secondary-subtle rounded my-1 p-1">
-                    <div class="col-auto">
-                        <p class="mb-0" th:text="|작성자: ${comment.getWriter.getId()}|"></p>
-                    </div>
-                    <div class="col text-end">
-                        <p class="mb-0" th:text="${#temporals.format(comment.getCreateTime(), 'yyyy/MM/dd HH:mm')}"></p>
-                    </div>
+    </div>
+    <hr class="my-3">
+    <div class="row">
+        <div class="container m-2" th:each="comment, iterStat : ${targetPost.getComment()}" th:id="'comment-' + ${iterStat.index}">
+            <div class="row bg-secondary-subtle rounded my-1 p-1">
+                <div class="col-auto">
+                    <p class="mb-0" th:text="|작성자: ${comment.getWriter.getId()}|"></p>
                 </div>
-                <div class="column">
-                    <p th:text="${comment.body}"></p>
-                </div>
-                <div class="text-end" th:if="${session.loginUser} and ${comment.getWriter().id} == ${session.loginUser.id}" >
-                    <a th:onclick="expandCommentUpdateForm('comment-' + [[${iterStat.index}]], [[${comment.getId()}]])"
-                       class="link-underline-opacity-0 link-dark" href="#">수정</a>
-                    &nbsp;&nbsp;
-                    <a th:href="@{/post/deleteComment(commentId=${comment.getId()})}"
-                       class="link-underline-opacity-0 link-dark">삭제</a>
+                <div class="col text-end">
+                    <p class="mb-0" th:text="${#temporals.format(comment.getCreateTime(), 'yyyy/MM/dd HH:mm')}"></p>
                 </div>
             </div>
+            <div class="column">
+                <p th:text="${comment.body}"></p>
+            </div>
+            <div class="text-end" th:if="${session.loginUser} and ${comment.getWriter().id} == ${session.loginUser.id}" >
+                <a th:onclick="expandCommentUpdateForm('comment-' + [[${iterStat.index}]], [[${comment.getId()}]])"
+                   class="link-underline-opacity-0 link-dark" href="#">수정</a>
+                &nbsp;&nbsp;
+                <a th:href="@{/post/deleteComment(commentId=${comment.getId()})}"
+                   class="link-underline-opacity-0 link-dark">삭제</a>
+            </div>
         </div>
-        <div class="row">
-            <form th:action="@{/post/{param1}/addComment(param1=${targetPost.getId()})}"
-                  th:object="${commentForm}" method="post">
-                <div class="form-group my-3">
-                    <textarea class="form-control" th:field="*{commentBody}" rows="3" th:errorclass="border-danger"></textarea>
-                    <div class="border-danger" th:errors="*{commentBody}"></div>
-                </div>
-                <button type="submit" class="btn btn-primary my-4">댓글 등록</button>
-            </form>
-        </div>
-
+    </div>
+    <div class="row">
+        <form th:action="@{/post/{param1}/addComment(param1=${targetPost.getId()})}"
+              th:object="${commentForm}" method="post">
+            <div class="form-group my-3">
+                <textarea class="form-control" th:field="*{commentBody}" rows="3" th:errorclass="border-danger"></textarea>
+                <div class="border-danger" th:errors="*{commentBody}"></div>
+            </div>
+            <button type="submit" class="btn btn-primary my-4">댓글 등록</button>
+        </form>
     </div>
 
 </div>
+
+
 <script src="/js/bootstrap.bundle.js"></script>
 <script src="https://uicdn.toast.com/editor/latest/toastui-editor-viewer.js"></script>
 <script th:inline="javascript">

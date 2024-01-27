@@ -45,18 +45,21 @@ public class PostController {
 
     @GetMapping("/{postId}")
     public String getPost(@PathVariable Long postId, Model model,
-                          @SessionAttribute(name=SessionConst.LOGIN_USER, required = false)User user){
+                          @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User user) {
         Post post = postRepository.findById(postId).orElseThrow();
         model.addAttribute("targetPost", post);
         model.addAttribute("commentForm", new CommentForm());
-        if(user != null && post.getWriter().getId().equals(user.getId()) ){
+        if (user != null && post.getWriter().getId().equals(user.getId())) {
             model.addAttribute("isWriter", true);
         }
+        model.addAttribute("isLiked", user != null && postService.isLiked(post, user));
+        model.addAttribute("isDisliked", user != null && postService.isDisliked(post, user));
+
         return "post";
     }
 
     @GetMapping("/addnew/{boardId}")
-    public String addPost(@PathVariable String boardId, Model model){
+    public String addPost(@PathVariable String boardId, Model model) {
         model.addAttribute("postingForm", new PostingForm());
         model.addAttribute("boardId", boardId);
         return "newPost";
@@ -65,9 +68,9 @@ public class PostController {
     @PostMapping("/addnew/{boardId}")
     public String addPost(@Valid @ModelAttribute PostingForm postingForm,
                           BindingResult bindingResult, @PathVariable String boardId,
-                          @SessionAttribute(name=SessionConst.LOGIN_USER)User user,
-                          RedirectAttributes redirectAttributes){
-        if(bindingResult.hasErrors()){
+                          @SessionAttribute(name = SessionConst.LOGIN_USER) User user,
+                          RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
             return "newPost";
         }
         Board board = boardRepository.findById(boardId).orElseThrow();
@@ -80,10 +83,10 @@ public class PostController {
     @PostMapping("/{postId}/addComment")
     public String addComment(@Valid @ModelAttribute CommentForm commentForm,
                              BindingResult bindingResult, @PathVariable Long postId,
-                             @SessionAttribute(name=SessionConst.LOGIN_USER, required = false) User user, Model model){
+                             @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User user, Model model) {
         Post targetPost = postRepository.findById(postId).orElseThrow();
-        if(bindingResult.hasErrors() || user == null){
-            if(user == null){
+        if (bindingResult.hasErrors() || user == null) {
+            if (user == null) {
                 bindingResult.rejectValue("commentBody", "notLoggedIn", "로그인 해주세요.");
             }
             model.addAttribute("targetPost", targetPost);
@@ -95,10 +98,10 @@ public class PostController {
 
     @GetMapping("/{postId}/delete")
     public String deletePost(@PathVariable Long postId,
-                             @SessionAttribute(name=SessionConst.LOGIN_USER) User user,
-                             RedirectAttributes redirectAttributes){
+                             @SessionAttribute(name = SessionConst.LOGIN_USER) User user,
+                             RedirectAttributes redirectAttributes) {
         Post post = postRepository.findById(postId).orElseThrow();
-        if(post.getWriter().getId().equals(user.getId()) ){
+        if (post.getWriter().getId().equals(user.getId())) {
             postService.deletePost(post);
         }
 
@@ -107,7 +110,7 @@ public class PostController {
     }
 
     @GetMapping("/{postId}/edit")
-    public String editPost(@PathVariable Long postId, Model model){
+    public String editPost(@PathVariable Long postId, Model model) {
         Post post = postRepository.findById(postId).orElseThrow();
         PostingForm postingForm = new PostingForm();
         postingForm.setTitle(post.getTitle());
@@ -119,12 +122,13 @@ public class PostController {
 
     @PostMapping("/{postId}/edit")
     public String doEditPost(@PathVariable Long postId, @Valid @ModelAttribute PostingForm postingForm, BindingResult bindingResult,
-                             @SessionAttribute(name=SessionConst.LOGIN_USER) User user,
-                             RedirectAttributes redirectAttributes){
-        if(bindingResult.hasErrors()){
-            return "editPost";}
+                             @SessionAttribute(name = SessionConst.LOGIN_USER) User user,
+                             RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            return "editPost";
+        }
         Post post = postRepository.findById(postId).orElseThrow();
-        if(post.getWriter().getId().equals(user.getId())){
+        if (post.getWriter().getId().equals(user.getId())) {
             postService.update(post, postingForm.getTitle(), postingForm.getBody());
         }
         redirectAttributes.addAttribute("postId", postId);
@@ -133,9 +137,9 @@ public class PostController {
 
     @PostMapping("/editComment")
     public ResponseEntity<String> editComment(@Validated @RequestBody CommentForm commentForm, BindingResult bindingResult,
-                                              @SessionAttribute(name=SessionConst.LOGIN_USER) User user){
+                                              @SessionAttribute(name = SessionConst.LOGIN_USER) User user) {
         log.info("commentForm: {}", commentForm);
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             log.info("error: {}", bindingResult.getAllErrors());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("내용이 없습니다.");
         }
@@ -144,15 +148,33 @@ public class PostController {
     }
 
     @GetMapping("/deleteComment")
-    public String deleteComment(@RequestParam Long commentId, @SessionAttribute(name=SessionConst.LOGIN_USER) User user,
-                                RedirectAttributes redirectAttributes){
+    public String deleteComment(@RequestParam Long commentId, @SessionAttribute(name = SessionConst.LOGIN_USER) User user,
+                                RedirectAttributes redirectAttributes) {
         Comment comment = commentRepository.findById(commentId).orElseThrow();
-        if(comment.getWriter().getId().equals(user.getId())){
+        if (comment.getWriter().getId().equals(user.getId())) {
             commentService.deleteComment(comment);
         }
         redirectAttributes.addAttribute("postId", comment.getPost().getId());
         return "redirect:/post/{postId}";
     }
+
+    @GetMapping("/{postId}/likePost")
+    public String likeOrDislikePost(@PathVariable Long postId, @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User user,
+                                    @RequestParam Boolean isLike) {
+        if (user == null){
+            return "redirect:/user/login";
+        }
+        Post targetPost = postRepository.findById(postId).orElseThrow();
+        if(isLike){
+            postService.likeOrUnlike(targetPost, user);
+        }else{
+            postService.dislikeOrUndislike(targetPost, user);
+        }
+
+        return "redirect:/post/{postId}";
+    }
+
+
 
 
 
