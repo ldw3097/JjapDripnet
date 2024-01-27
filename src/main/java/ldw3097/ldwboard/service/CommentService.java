@@ -38,7 +38,10 @@ public class CommentService {
     }
 
     @Transactional
-    public void updateComment(Comment comment, String newBody){
-        comment.setBody(newBody);
+    public void updateComment(Long commentId, User user, String newBody){
+        Comment comment = commentRepository.findById(commentId).orElseThrow();
+        if (comment.getWriter().getId().equals(user.getId()) ){
+            comment.setBody(newBody);
+        }
     }
 }

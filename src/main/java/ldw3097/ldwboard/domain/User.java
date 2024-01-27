@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Collection;
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -15,5 +18,14 @@ public class User {
 
     private String password;
 
+    @ManyToMany(mappedBy = "likedBy")
+    private Collection<Post> posts;
 
+    public Collection<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Collection<Post> posts) {
+        this.posts = posts;
+    }
 }

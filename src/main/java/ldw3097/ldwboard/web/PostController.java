@@ -17,6 +17,8 @@ import ldw3097.ldwboard.web.form.CommentForm;
 import ldw3097.ldwboard.web.form.PostingForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Optional;
 
 @Controller
@@ -128,20 +131,16 @@ public class PostController {
         return "redirect:/post/{postId}";
     }
 
-    @GetMapping("/editComment")
-    public String editComment(@RequestParam Long commentId,
-                              @Validated @ModelAttribute CommentForm commentForm, BindingResult bindingResult,
-                              @SessionAttribute(name=SessionConst.LOGIN_USER) User user,
-                              RedirectAttributes redirectAttributes){
+    @PostMapping("/editComment")
+    public ResponseEntity<String> editComment(@Validated @RequestBody CommentForm commentForm, BindingResult bindingResult,
+                                              @SessionAttribute(name=SessionConst.LOGIN_USER) User user){
+        log.info("commentForm: {}", commentForm);
         if(bindingResult.hasErrors()){
-            return "redirect:/";
+            log.info("error: {}", bindingResult.getAllErrors());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("내용이 없습니다.");
         }
-        Comment comment = commentRepository.findById(commentId).orElseThrow();
-        if (comment.getWriter().getId().equals(user.getId()) ){
-            comment.setBody(commentForm.getCommentBody());
-        }
-        redirectAttributes.addAttribute("postId", comment.getPost().getId());
-        return "redirect:/post/{postId}";
+        commentService.updateComment(commentForm.getCommentId(), user, commentForm.getCommentBody());
+        return ResponseEntity.ok("댓글 수정에 성공했습니다.");
     }
 
     @GetMapping("/deleteComment")

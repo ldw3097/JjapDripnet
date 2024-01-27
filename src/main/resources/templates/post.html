@@ -7,10 +7,6 @@
     .pagination-custom{
         width: 40px;
     }
-    a{
-        text-decoration: none;
-        color: dimgray;
-    }
     .toastui-editor-contents p {
         font-size: 16px;
     }
@@ -26,9 +22,9 @@
             <span th:text="|글쓴이: ${targetPost.getWriter.id} &nbsp&nbsp&nbsp 글쓴시각: ${#temporals.format(targetPost.createTime, 'yyyy/MM/dd HH:mm')}|"></span>
         </div>
         <div class="text-end" th:if="${isWriter}">
-            <a th:href="@{/post/{param1}/edit(param1=${targetPost.getId()}) }">수정</a>
+            <a class="link-underline-opacity-0 link-dark" th:href="@{/post/{param1}/edit(param1=${targetPost.getId()}) }">수정</a>
             &nbsp;&nbsp;
-            <a th:href="@{/post/{param1}/delete(param1=${targetPost.getId()}) }">삭제</a>
+            <a class="link-underline-opacity-0 link-dark" th:href="@{/post/{param1}/delete(param1=${targetPost.getId()}) }">삭제</a>
         </div>
         <hr class="my-3">
         <div class="row" style="min-height : 400px">
@@ -49,9 +45,11 @@
                     <p th:text="${comment.body}"></p>
                 </div>
                 <div class="text-end" th:if="${session.loginUser} and ${comment.getWriter().id} == ${session.loginUser.id}" >
-<!--                    <a th:href="@{/post/editComment(param1=${comment.getId()})}">수정</a>-->
-<!--                    &nbsp;&nbsp;-->
-                    <a th:href="@{/post/deleteComment(commentId=${comment.getId()})}">삭제</a>
+                    <a th:onclick="expandCommentUpdateForm('comment-' + [[${iterStat.index}]], [[${comment.getId()}]])"
+                       class="link-underline-opacity-0 link-dark" href="#">수정</a>
+                    &nbsp;&nbsp;
+                    <a th:href="@{/post/deleteComment(commentId=${comment.getId()})}"
+                       class="link-underline-opacity-0 link-dark">삭제</a>
                 </div>
             </div>
         </div>
@@ -81,6 +79,60 @@
         height: "800px",
         initialValue: content,
     });
+
+    function expandCommentUpdateForm(commentElemId, commentId) {
+        var commentContainer = document.getElementById(commentElemId);
+
+        // 현재의 내용 가져오기
+        var originalContent = commentContainer.querySelector('.column p').innerText;
+
+        // textarea 엘리먼트 생성
+        var textarea = document.createElement('textarea');
+        textarea.value = originalContent;
+        textarea.className = "form-control";
+
+        // p 엘리먼트를 textarea로 교체
+        var pElement = commentContainer.querySelector('.column p');
+        commentContainer.querySelector('.column').replaceChild(textarea, pElement);
+
+        // 수정 버튼을 완료 버튼으로 변경
+        var updateButton = commentContainer.querySelector('.text-end a:first-child');
+        updateButton.innerText = '완료';
+
+
+        // 삭제 버튼을 취소 버튼으로 변경
+        var deleteButton = commentContainer.querySelector('.text-end a:last-child');
+        deleteButton.innerText = '취소';
+        deleteButton.setAttribute("href", "#")
+
+        // 완료 버튼 클릭 시 이벤트 리스너 추가
+        updateButton.onclick = function() {
+            // 수정 내용을 가져와서 서버에 업데이트하는 로직 추가
+            var updatedContent = textarea.value;
+            console.info("updatedContent: ", updatedContent, " commentId: ", commentId)
+            // 여기에 서버 업데이트 로직 추가
+            fetch("/post/editComment", {
+                method: "POST",
+                headers:{
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({"commentBody": updatedContent, "commentId": commentId})
+            })
+                .then(response =>{
+                    if(response.ok){
+                        location.reload();
+                    }else{
+                        alert("유효하지 않은 댓글 형식입니다.");
+                    }
+                })
+        };
+
+        // 취소 버튼 클릭 시 이벤트 리스너 추가
+        deleteButton.onclick = function() {
+            location.reload();
+        };
+    }
+
 </script>
 </body>
 </html>

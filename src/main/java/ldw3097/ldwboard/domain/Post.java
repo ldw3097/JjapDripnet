@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter @Setter
@@ -29,4 +31,13 @@ public class Post {
     private List<Comment> comment;
 
     private LocalDateTime createTime;
+
+
+    private int likes;
+
+    private int dislikes;
+
+
+    private Long views;
+
 }

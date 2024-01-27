@@ -41,4 +41,9 @@ public class PostService {
         post.setBody(newBody);
     }
 
+    @Transactional
+    public void like(Post post){
+
+    }
+
 }
