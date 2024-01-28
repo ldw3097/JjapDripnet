@@ -30,7 +30,7 @@
         <div id="viewer"></div>
     </div>
     <div class="row">
-        <div class="col d-xl-flex justify-content-xl-center">
+        <div class="col d-flex justify-content-center">
             <a class="btn btn-outline-success" type="button" style="margin-right: 33px;"
                th:text="|추천 ${targetPost.getLikes()}|" th:href="@{/post/{param1}/likePost(param1=${targetPost.getId()}, isLike=${true})}"
                 th:classappend="${isLiked} ? 'active' ">추천</a>
