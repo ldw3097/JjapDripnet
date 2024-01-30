@@ -1,11 +1,11 @@
 package ldw3097.ldwboard.web;
 
 
-import ldw3097.ldwboard.service.ImageService;
+import ldw3097.ldwboard.service.ImageServiceLocal;
+import ldw3097.ldwboard.service.ImageServiceS3;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +21,7 @@ import java.nio.file.Paths;
 @RequiredArgsConstructor
 public class ImageController {
 
-    private final ImageService imageService;
+    private final ImageServiceS3 imageServiceS3;
 
     @PostMapping("/upload")
     public ResponseEntity<String> upload(@RequestParam final MultipartFile image){
@@ -29,18 +29,17 @@ public class ImageController {
             return ResponseEntity.badRequest().body("이미지가 없습니다.");
         }
         try{
-            String filename = imageService.storeFile(image);
+            String filename = imageServiceS3.storeFile(image);
             return ResponseEntity.ok(filename);
         }catch (IOException e){
             return ResponseEntity.internalServerError().body("이미지 저장에 실패했습니다.");
         }
-
     }
 
     @GetMapping("/attach")
-    public ResponseEntity<Resource> getImage(@RequestParam String filename) throws MalformedURLException{
-        Path filePath = Paths.get(imageService.getFullPath(filename));
-        Resource resource = new UrlResource(filePath.toUri());
+    public ResponseEntity<Resource> getImage(@RequestParam String filename){
+
+        Resource resource = imageServiceS3.downloadFile(filename);
         if (resource.exists() && resource.isReadable()){
             return ResponseEntity.ok().body(resource);
 

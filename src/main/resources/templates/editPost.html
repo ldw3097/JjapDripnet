@@ -21,7 +21,10 @@
             <div class="form-group my-2">
                 <div id="editor"></div>
             </div>
-            <button class="btn btn-primary my-4" onclick="submitForm(this)">등록</button>
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-primary my-4" onclick="submitForm(this)">등록</button>
+            </div>
+
 
         </form>
 
@@ -40,7 +43,26 @@
         el: document.querySelector('#editor'),
         height: '800px',
         initialEditType: 'wysiwyg',
-        initialValue: body
+        initialValue: body,
+        hooks: {
+            async addImageBlobHook(blob, callback){
+                const formData = new FormData();
+                formData.append("image", blob);
+
+                const response = await fetch("/image/upload", {
+                    method : "POST",
+                    body : formData,
+                });
+                if(response.ok){
+                    const filename = await response.text();
+                    console.log("서버에 저장된 파일명: ", filename);
+                    imageUrl = `/image/attach?filename=${filename}`;
+                    callback(imageUrl, "image alt attribute");
+                }else{
+                    alert(await response.text());
+                }
+            }
+        }
     });
 
     function submitForm(element){

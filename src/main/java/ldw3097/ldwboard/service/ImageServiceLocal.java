@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Service
-public class ImageService {
+public class ImageServiceLocal {
 
     @Value("${file.dir}")
     String fileDir;
