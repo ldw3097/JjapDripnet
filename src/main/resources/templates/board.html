@@ -3,14 +3,15 @@
 <head th:replace="~{fragments/head :: head(#{${boardId}})}">
 </head>
 <body>
-<style>
-    .pagination-custom{
-        width: 40px;
-    }
-</style>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 <div class="container-md">
     <div th:replace="~{fragments/boardTitle :: boardTitle(${boardId})}"></div>
+    <div>
+        <a href="#" id="search-toggle" data-bs-toggle="modal" data-bs-target="#searchModal" style="font-size: 20px;color: var(--bs-body-color);">
+            <i class="fas fa-search ">&nbsp</i>
+        </a>
+
+    </div>
     <div>
         <table class="table table-striped text-center">
             <thead>
@@ -33,12 +34,20 @@
             </tbody>
         </table>
     </div>
+    <div class="text-end">
+        <button class="btn btn-primary" th:onclick="|location.href='@{/post/addnew/{param1}(param1=${boardId})}'|">글쓰기</button>
+    </div>
     <div class="row">
         <nav>
             <ul class="pagination justify-content-center">
                 <li class="page-item" th:each="pageNumber : ${pageNumbers}">
-                    <a class="page-link"
-                       th:href="@{ /board/{param1}(param1=${boardId}, pageNum=${pageNumber}) }"
+                    <a th:if="${postSearchKey} == null" class="page-link"
+                       th:href="@{ /board/{param1}(param1=${boardId}, pageNum=${pageNumber} ) }"
+                       th:text="${pageNumber}"
+                       th:classappend="${pageNumber == posts.number + 1} ? active ">
+                    </a>
+                    <a th:unless="${postSearchKey} == null" class="page-link"
+                       th:href="@{ /board/{param1}(param1=${boardId}, pageNum=${pageNumber}, postSearchKey=${postSearchKey}, postSearchVal=${postSearchVal} ) }"
                        th:text="${pageNumber}"
                        th:classappend="${pageNumber == posts.number + 1} ? active ">
                     </a>
@@ -46,10 +55,42 @@
             </ul>
         </nav>
     </div>
-    <div class="text-end">
-        <button class="btn btn-primary" th:onclick="|location.href='@{/post/addnew/{param1}(param1=${boardId})}'|">글쓰기</button>
-    </div>
 
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="searchModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">검색</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action method="get">
+                <div class="modal-body">
+                    <div class="form-group mt-3">
+                        <select class="form-control" id="postSearchKey" name="postSearchKey">
+                            <option th:value="TITLEBODY">제목+내용</option>
+                            <option th:value="TITLE">제목</option>
+                            <option th:value="BODY">내용</option>
+                            <option th:value="WRITER">글쓴이</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <input type="text" class="form-control" id="postSearchVal" name="postSearchVal" required>
+                    </div>
+
+                </div>
+                <div class="modal-footer mt-2">
+                    <div>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                        <button type="submit" class="btn btn-primary">검색</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 

@@ -1,13 +1,12 @@
 package ldw3097.ldwboard.service;
 
 import ldw3097.ldwboard.domain.*;
-import ldw3097.ldwboard.repository.PostRepository;
+import ldw3097.ldwboard.repository.*;
 
-import ldw3097.ldwboard.repository.UserPostDislikesRepository;
-import ldw3097.ldwboard.repository.UserPostLikesRepository;
 import ldw3097.ldwboard.web.form.PostingForm;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,5 +72,8 @@ public class PostService {
             userPostDislikesRepository.save(new UserPostDislikes(user, post));
         }
     }
+
+
+
 
 }
