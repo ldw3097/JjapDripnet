@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,13 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserPostLikesRepository userPostLikesRepository;
     private final UserPostDislikesRepository userPostDislikesRepository;
+
+    @Transactional
+    public Post getPost(Long postId){
+        Post post = postRepository.findById(postId).orElseThrow();
+        post.incViewCnt();
+        return post;
+    }
 
     @Transactional
     public Long savePost(String title, String body, Board board, User user) {

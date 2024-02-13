@@ -39,6 +39,8 @@ public class Post {
 
     private int dislikes;
 
+    private int viewCnt;
+
 
     public void like(){
         ++likes;
@@ -62,6 +64,10 @@ public class Post {
 
     public void decCommentCnt(){
         --commentCnt;
+    }
+
+    public void incViewCnt(){
+        ++viewCnt;
     }
 
 

@@ -46,7 +46,7 @@ public class PostController {
     @GetMapping("/{postId}")
     public String getPost(@PathVariable Long postId, Model model,
                           @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User user) {
-        Post post = postRepository.findById(postId).orElseThrow();
+        Post post = postService.getPost(postId);
         model.addAttribute("targetPost", post);
         model.addAttribute("commentForm", new CommentForm());
         if (user != null && post.getWriter().getId().equals(user.getId())) {
