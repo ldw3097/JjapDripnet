@@ -1,6 +1,7 @@
 package ldw3097.ldwboard.web;
 
 import ldw3097.ldwboard.domain.Post;
+import ldw3097.ldwboard.dto.PostInfoDto;
 import ldw3097.ldwboard.repository.PostRepository;
 import ldw3097.ldwboard.repository.PostSearchKey;
 import ldw3097.ldwboard.service.BoardService;
@@ -26,7 +27,6 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 @RequestMapping("board")
 public class BoardController {
-    private final PostRepository postRepository;
     private final BoardService boardService;
 
     @GetMapping({"/{boardId}"})
@@ -34,14 +34,16 @@ public class BoardController {
                         @RequestParam Optional<PostSearchKey> postSearchKey, @RequestParam Optional<String> postSearchVal, Model model){
         PageRequest pageRequest = PageRequest.of(pageNum-1, 10, Sort.by(Sort.Direction.DESC, "id"));
 
-        Page<Post> posts;
+        Page<PostInfoDto> posts;
         if(postSearchKey.isPresent() && postSearchVal.isPresent()){
             posts = boardService.searchPage(boardId, postSearchKey.get(), postSearchVal.get(), pageRequest);
             model.addAttribute("postSearchKey", postSearchKey.get());
             model.addAttribute("postSearchVal", postSearchVal.get());
         }else{
-            posts = postRepository.findByBoardId(boardId, pageRequest);
+            posts = boardService.getPage(boardId, pageRequest);
         }
+
+
 
         model.addAttribute("posts", posts);
         int start = Math.max(1, pageNum - 4);

@@ -27,7 +27,7 @@
             <tbody>
             <tr th:each="post : ${posts}">
                 <td class="text-start"><a th:href="@{/post/{param1}(param1=${post.getId()})}" th:text="${post.title}" ></a></td>
-                <td><span th:text="${post.getWriter.id}" ></span></td>
+                <td><span th:text="${post.writerId}" ></span></td>
                 <td><span th:text="${post.likes}"></span></td>
                 <td><span th:text="${post.commentCnt}"></span></td>
                 <td><span th:text="${post.viewCnt}"></span></td>

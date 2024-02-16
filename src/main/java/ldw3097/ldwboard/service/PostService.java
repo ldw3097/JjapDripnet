@@ -1,20 +1,18 @@
 package ldw3097.ldwboard.service;
 
 import ldw3097.ldwboard.domain.*;
-import ldw3097.ldwboard.repository.*;
-
-import ldw3097.ldwboard.web.form.PostingForm;
+import ldw3097.ldwboard.repository.PostRepository;
+import ldw3097.ldwboard.repository.UserPostDislikesRepository;
+import ldw3097.ldwboard.repository.UserPostLikesRepository;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.data.domain.Page;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
@@ -22,11 +20,13 @@ public class PostService {
     private final UserPostDislikesRepository userPostDislikesRepository;
 
     @Transactional
-    public Post getPost(Long postId){
+    public Post getPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow();
         post.incViewCnt();
         return post;
     }
+
+
 
     @Transactional
     public Long savePost(String title, String body, Board board, User user) {
@@ -41,47 +41,45 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Post post){
+    public void deletePost(Post post) {
         postRepository.delete(post);
     }
 
     @Transactional
-    public void update(Post post, String newTitle, String newBody){
+    public void update(Post post, String newTitle, String newBody) {
         post.setTitle(newTitle);
         post.setBody(newBody);
     }
 
     @Transactional
-    public void likeOrUnlike(Post post, User user){
-        if(userPostLikesRepository.existsByUserIdAndPostId(user.getId(), post.getId())){
+    public void likeOrUnlike(Post post, User user) {
+        if (userPostLikesRepository.existsByUserIdAndPostId(user.getId(), post.getId())) {
             post.unlike();
             userPostLikesRepository.deleteByUserIdAndPostId(user.getId(), post.getId());
-        }else{
+        } else {
             post.like();
             userPostLikesRepository.save(new UserPostLikes(user, post));
         }
     }
 
-    public boolean isLiked(Post post, User user){
+    public boolean isLiked(Post post, User user) {
         return userPostLikesRepository.existsByUserIdAndPostId(user.getId(), post.getId());
     }
 
-    public boolean isDisliked(Post post, User user){
+    public boolean isDisliked(Post post, User user) {
         return userPostDislikesRepository.existsByUserIdAndPostId(user.getId(), post.getId());
     }
 
     @Transactional
-    public void dislikeOrUndislike(Post post, User user){
-        if(userPostDislikesRepository.existsByUserIdAndPostId(user.getId(), post.getId())){
+    public void dislikeOrUndislike(Post post, User user) {
+        if (userPostDislikesRepository.existsByUserIdAndPostId(user.getId(), post.getId())) {
             post.undislike();
             userPostDislikesRepository.deleteByUserIdAndPostId(user.getId(), post.getId());
-        }else{
+        } else {
             post.dislike();
             userPostDislikesRepository.save(new UserPostDislikes(user, post));
         }
     }
-
-
 
 
 }

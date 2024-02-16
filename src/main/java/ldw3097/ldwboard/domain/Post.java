@@ -3,6 +3,10 @@ package ldw3097.ldwboard.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -11,6 +15,8 @@ import java.util.Set;
 
 @Entity
 @Getter @Setter
+@Slf4j
+//@org.hibernate.annotations.Cache(usage= CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Post {
 
     @Id @GeneratedValue
@@ -41,7 +47,6 @@ public class Post {
 
     private int viewCnt;
 
-
     public void like(){
         ++likes;
     }
@@ -69,6 +74,5 @@ public class Post {
     public void incViewCnt(){
         ++viewCnt;
     }
-
 
 }
