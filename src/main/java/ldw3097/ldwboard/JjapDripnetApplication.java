@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication(exclude= SecurityAutoConfiguration.class)
+@EnableCaching
 public class JjapDripnetApplication {
 
 	public static void main(String[] args) {

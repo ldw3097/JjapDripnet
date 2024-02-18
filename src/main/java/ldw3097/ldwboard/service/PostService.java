@@ -6,6 +6,10 @@ import ldw3097.ldwboard.repository.UserPostDislikesRepository;
 import ldw3097.ldwboard.repository.UserPostLikesRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,11 +23,9 @@ public class PostService {
     private final UserPostLikesRepository userPostLikesRepository;
     private final UserPostDislikesRepository userPostDislikesRepository;
 
-    @Transactional
+    @Cacheable(value = "postCache", key="#postId")
     public Post getPost(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow();
-        post.incViewCnt();
-        return post;
+        return postRepository.findById(postId).orElseThrow();
     }
 
 
@@ -41,18 +43,22 @@ public class PostService {
     }
 
     @Transactional
+    @CacheEvict(value = "postCache", key="#post.id")
     public void deletePost(Post post) {
         postRepository.delete(post);
     }
 
     @Transactional
-    public void update(Post post, String newTitle, String newBody) {
+    @CachePut(value = "postCache", key="#post.id")
+    public Post update(Post post, String newTitle, String newBody) {
         post.setTitle(newTitle);
         post.setBody(newBody);
+        return post;
     }
 
     @Transactional
-    public void likeOrUnlike(Post post, User user) {
+    @CachePut(value = "postCache", key="#post.id")
+    public Post likeOrUnlike(Post post, User user) {
         if (userPostLikesRepository.existsByUserIdAndPostId(user.getId(), post.getId())) {
             post.unlike();
             userPostLikesRepository.deleteByUserIdAndPostId(user.getId(), post.getId());
@@ -60,7 +66,9 @@ public class PostService {
             post.like();
             userPostLikesRepository.save(new UserPostLikes(user, post));
         }
+        return post;
     }
+
 
     public boolean isLiked(Post post, User user) {
         return userPostLikesRepository.existsByUserIdAndPostId(user.getId(), post.getId());

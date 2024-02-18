@@ -31,7 +31,7 @@ public class ComplexPostRepository {
     public Page<PostInfoDto> searchPost(String boardId, PostSearchKey searchKey, String searchVal, Pageable pageable) {
         List<PostInfoDto> queryResult = queryFactory
                 .select(Projections.constructor(PostInfoDto.class,
-                        post.id, post.title, post.writer.id, post.likes, post.dislikes, post.createTime, post.viewCnt, post.commentCnt))
+                        post.id, post.title, post.writer.id, post.likes, post.createTime, post.commentCnt))
                 .from(post)
                 .join(post.writer, user)
                 .where(post.board.id.eq(boardId),
@@ -51,26 +51,6 @@ public class ComplexPostRepository {
 
     }
 
-//    public Page<Post> searchPost(String boardId, PostSearchKey searchKey, String searchVal, Pageable pageable) {
-//        List<Post> queryResult = queryFactory
-//                .selectFrom(post)
-//                .join(post.writer, user)
-//                .where(post.board.id.eq(boardId),
-//                       searchCriteria(searchKey, searchVal))
-//                .offset(pageable.getOffset())
-//                .limit(pageable.getPageSize())
-//                .orderBy(post.id.desc())
-//                .fetch();
-//
-//        JPAQuery<Long> queryCount = queryFactory
-//                .select(post.count())
-//                .from(post)
-//                .join(post.writer, user)
-//                .where(post.board.id.eq(boardId),searchCriteria(searchKey, searchVal));
-//
-//        return PageableExecutionUtils.getPage(queryResult, pageable, queryCount::fetchOne);
-//
-//    }
 
     private BooleanExpression searchCriteria(PostSearchKey searchKey, String searchVal){
         if (searchKey == null) return null;
