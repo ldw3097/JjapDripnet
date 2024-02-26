@@ -30,7 +30,7 @@ public class BoardService {
 
 
     public Page<PostInfoDto> getPage(String boardId, PageRequest pageRequest) {
-        return complexPostRepository.searchPost(boardId, null, null, pageRequest);
+        return postRepository.getPosts(boardId, pageRequest);
     }
 
 //    public Page<Post> getPage(String boardId, PageRequest pageRequest) {

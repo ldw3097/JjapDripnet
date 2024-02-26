@@ -138,12 +138,11 @@ public class PostController {
     @PostMapping("/editComment")
     public ResponseEntity<String> editComment(@Validated @RequestBody CommentForm commentForm, BindingResult bindingResult,
                                               @SessionAttribute(name = SessionConst.LOGIN_USER) User user) {
-        log.info("commentForm: {}", commentForm);
         if (bindingResult.hasErrors()) {
-            log.info("error: {}", bindingResult.getAllErrors());
+            log.warn("error: {}", bindingResult.getAllErrors());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("내용이 없습니다.");
         }
-        commentService.updateComment(commentForm.getCommentId(), user, commentForm.getCommentBody());
+        commentService.updateComment(commentRepository.findById(commentForm.getCommentId()).orElseThrow(), user, commentForm.getCommentBody());
         return ResponseEntity.ok("댓글 수정에 성공했습니다.");
     }
 

@@ -33,7 +33,6 @@ public class ComplexPostRepository {
                 .select(Projections.constructor(PostInfoDto.class,
                         post.id, post.title, post.writer.id, post.likes, post.createTime, post.commentCnt))
                 .from(post)
-                .join(post.writer, user)
                 .where(post.board.id.eq(boardId),
                         searchCriteria(searchKey, searchVal))
                 .offset(pageable.getOffset())
@@ -44,7 +43,6 @@ public class ComplexPostRepository {
         JPAQuery<Long> queryCount = queryFactory
                 .select(post.count())
                 .from(post)
-                .join(post.writer, user)
                 .where(post.board.id.eq(boardId),searchCriteria(searchKey, searchVal));
 
         return PageableExecutionUtils.getPage(queryResult, pageable, queryCount::fetchOne);

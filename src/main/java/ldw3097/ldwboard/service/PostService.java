@@ -6,7 +6,6 @@ import ldw3097.ldwboard.repository.UserPostDislikesRepository;
 import ldw3097.ldwboard.repository.UserPostLikesRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -57,32 +56,32 @@ public class PostService {
     }
 
     @Transactional
-    @CachePut(value = "postCache", key="#post.id")
-    public Post likeOrUnlike(Post post, User user) {
-        if (userPostLikesRepository.existsByUserIdAndPostId(user.getId(), post.getId())) {
+    @CacheEvict(value = "postCache", key="#post.id")
+    public void likeOrUnlike(Post post, User user) {
+        if (userPostLikesRepository.existsByUserAndPost(user, post)) {
             post.unlike();
-            userPostLikesRepository.deleteByUserIdAndPostId(user.getId(), post.getId());
+            userPostLikesRepository.deleteByUserAndPost(user, post);
         } else {
             post.like();
             userPostLikesRepository.save(new UserPostLikes(user, post));
         }
-        return post;
     }
 
 
     public boolean isLiked(Post post, User user) {
-        return userPostLikesRepository.existsByUserIdAndPostId(user.getId(), post.getId());
+        return userPostLikesRepository.existsByUserAndPost(user, post);
     }
 
     public boolean isDisliked(Post post, User user) {
-        return userPostDislikesRepository.existsByUserIdAndPostId(user.getId(), post.getId());
+        return userPostDislikesRepository.existsByUserAndPost(user, post);
     }
 
     @Transactional
+    @CacheEvict(value = "postCache", key="#post.id")
     public void dislikeOrUndislike(Post post, User user) {
-        if (userPostDislikesRepository.existsByUserIdAndPostId(user.getId(), post.getId())) {
+        if (userPostDislikesRepository.existsByUserAndPost(user, post)) {
             post.undislike();
-            userPostDislikesRepository.deleteByUserIdAndPostId(user.getId(), post.getId());
+            userPostDislikesRepository.deleteByUserAndPost(user, post);
         } else {
             post.dislike();
             userPostDislikesRepository.save(new UserPostDislikes(user, post));

@@ -6,6 +6,7 @@ import ldw3097.ldwboard.domain.User;
 import ldw3097.ldwboard.repository.CommentRepository;
 import ldw3097.ldwboard.web.form.CommentForm;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
     @Transactional
+    @CacheEvict(value = "postCache", key="#post.id")
     public void saveComment(String commentBody, Post post, User user) {
         Comment comment = new Comment();
         comment.setBody(commentBody);
@@ -34,6 +36,7 @@ public class CommentService {
     }
 
     @Transactional
+    @CacheEvict(value = "postCache", key="#comment.post.id")
     public void deleteComment(Comment comment){
         commentRepository.delete(comment);
         Post targetPost = comment.getPost();
@@ -41,8 +44,8 @@ public class CommentService {
     }
 
     @Transactional
-    public void updateComment(Long commentId, User user, String newBody){
-        Comment comment = commentRepository.findById(commentId).orElseThrow();
+    @CacheEvict(value = "postCache", key="#comment.post.id")
+    public void updateComment(Comment comment, User user, String newBody){
         if (comment.getWriter().getId().equals(user.getId()) ){
             comment.setBody(newBody);
         }

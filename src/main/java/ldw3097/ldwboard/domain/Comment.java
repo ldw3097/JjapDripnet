@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter @Setter
-@org.hibernate.annotations.Cache(usage= CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Comment {
 
     @Id @GeneratedValue
